@@ -1,4 +1,4 @@
-package francisco.barbosa.tinyLedger.adapter.out;
+package francisco.barbosa.tinyLedger.adapter.out.inmemory;
 
 import francisco.barbosa.tinyLedger.app.*;
 import francisco.barbosa.tinyLedger.app.model.Account;

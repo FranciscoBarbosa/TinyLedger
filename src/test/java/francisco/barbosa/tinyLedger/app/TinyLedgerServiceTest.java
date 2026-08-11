@@ -1,6 +1,6 @@
 package francisco.barbosa.tinyLedger.app;
 
-import static francisco.barbosa.tinyLedger.adapter.out.AccountBalanceInMemoryRepository.UUID_ACCOUNT_FRANCISCO;
+import static francisco.barbosa.tinyLedger.adapter.out.inmemory.AccountBalanceInMemoryRepository.UUID_ACCOUNT_FRANCISCO;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
