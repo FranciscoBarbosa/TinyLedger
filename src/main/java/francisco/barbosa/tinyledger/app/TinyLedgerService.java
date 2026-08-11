@@ -1,9 +1,9 @@
-package francisco.barbosa.tinyLedger.app;
+package francisco.barbosa.tinyledger.app;
 
-import francisco.barbosa.tinyLedger.app.exception.AccountNotFoundException;
-import francisco.barbosa.tinyLedger.app.exception.OperationNotAllowedException;
-import francisco.barbosa.tinyLedger.app.model.Operation;
-import francisco.barbosa.tinyLedger.app.model.TransactionHistory;
+import francisco.barbosa.tinyledger.app.exception.AccountNotFoundException;
+import francisco.barbosa.tinyledger.app.exception.OperationNotAllowedException;
+import francisco.barbosa.tinyledger.app.model.Operation;
+import francisco.barbosa.tinyledger.app.model.TransactionHistory;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

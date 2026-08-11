@@ -1,4 +1,4 @@
-package francisco.barbosa.tinyLedger.app;
+package francisco.barbosa.tinyledger.app;
 
 import java.math.BigDecimal;
 

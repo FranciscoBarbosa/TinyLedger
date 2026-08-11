@@ -1,9 +1,9 @@
-package francisco.barbosa.tinyLedger.adapter.out.inmemory;
+package francisco.barbosa.tinyledger.adapter.out.inmemory;
 
-import francisco.barbosa.tinyLedger.app.TransactionHistoryRepository;
-import francisco.barbosa.tinyLedger.app.model.Operation;
-import francisco.barbosa.tinyLedger.app.model.Transaction;
-import francisco.barbosa.tinyLedger.app.model.TransactionHistory;
+import francisco.barbosa.tinyledger.app.TransactionHistoryRepository;
+import francisco.barbosa.tinyledger.app.model.Operation;
+import francisco.barbosa.tinyledger.app.model.Transaction;
+import francisco.barbosa.tinyledger.app.model.TransactionHistory;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashMap;
@@ -29,10 +29,9 @@ public class TransactionHistoryInMemoryRepository implements TransactionHistoryR
 		UUID transactionId = UUID.randomUUID();
 		Transaction transaction = new Transaction(transactionId, operation, ammount, Instant.now());
 
-		transactionHistoryStore.computeIfAbsent(accountId, key -> {
-			TransactionHistory transactionHistory = new TransactionHistory(key);
-			transactionHistory.addTransaction(transaction);
-			return transactionHistory;
-		});
+		TransactionHistory transactionHistory = transactionHistoryStore.computeIfAbsent(accountId,
+				TransactionHistory::new);
+
+		transactionHistory.addTransaction(transaction);
 	}
 }

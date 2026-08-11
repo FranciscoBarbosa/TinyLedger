@@ -1,6 +1,6 @@
-package francisco.barbosa.tinyLedger.adapter.in.rest;
+package francisco.barbosa.tinyledger.adapter.in.rest;
 
-import francisco.barbosa.tinyLedger.app.TinyLedgerService;
+import francisco.barbosa.tinyledger.app.TinyLedgerService;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,37 +14,21 @@ public class TinyLedgerController {
 
 	@GetMapping("/{accountId}")
 	ResponseEntity<BigDecimal> viewBalance(@PathVariable String accountId) {
-		try {
-			return ResponseEntity.ok(tinyLedgerService.viewBalance(accountId));
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().build();
-		}
+		return ResponseEntity.ok(tinyLedgerService.viewBalance(accountId));
 	}
 
 	@PostMapping("/{accountId}/deposits")
 	void deposit(@PathVariable String accountId, @RequestBody String amount) {
-		try {
-			tinyLedgerService.deposit(accountId, new BigDecimal(amount));
-		} catch (Exception e) {
-
-		}
+		tinyLedgerService.deposit(accountId, new BigDecimal(amount));
 	}
 
 	@PostMapping("/{accountId}/withdraws")
 	void withdraw(@PathVariable String accountId, @RequestBody String amount) {
-		try {
-			tinyLedgerService.withdraw(accountId, new BigDecimal(amount));
-		} catch (Exception e) {
-
-		}
+		tinyLedgerService.withdraw(accountId, new BigDecimal(amount));
 	}
 
 	@GetMapping("/{accountId}/transactions")
 	void viewTransactionHistory(@PathVariable String accountId) {
-		try {
-			tinyLedgerService.getTransactionHistory(accountId);
-		} catch (Exception e) {
-
-		}
+		tinyLedgerService.getTransactionHistory(accountId);
 	}
 }

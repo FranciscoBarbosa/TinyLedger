@@ -1,4 +1,4 @@
-package francisco.barbosa.tinyLedger.adapter.in.rest;
+package francisco.barbosa.tinyledger.adapter.in.rest;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

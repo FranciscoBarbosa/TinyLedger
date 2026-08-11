@@ -1,4 +1,4 @@
-package francisco.barbosa.tinyLedger;
+package francisco.barbosa.tinyledger;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

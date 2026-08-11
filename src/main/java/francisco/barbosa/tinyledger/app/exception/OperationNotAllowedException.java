@@ -1,4 +1,4 @@
-package francisco.barbosa.tinyLedger.app.exception;
+package francisco.barbosa.tinyledger.app.exception;
 
 public class OperationNotAllowedException extends RuntimeException {
 

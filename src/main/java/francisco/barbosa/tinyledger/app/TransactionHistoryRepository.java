@@ -1,7 +1,7 @@
-package francisco.barbosa.tinyLedger.app;
+package francisco.barbosa.tinyledger.app;
 
-import francisco.barbosa.tinyLedger.app.model.Operation;
-import francisco.barbosa.tinyLedger.app.model.TransactionHistory;
+import francisco.barbosa.tinyledger.app.model.Operation;
+import francisco.barbosa.tinyledger.app.model.TransactionHistory;
 import java.math.BigDecimal;
 
 public interface TransactionHistoryRepository {

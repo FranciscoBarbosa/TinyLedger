@@ -1,7 +1,7 @@
-package francisco.barbosa.tinyLedger.adapter.out.inmemory;
+package francisco.barbosa.tinyledger.adapter.out.inmemory;
 
-import francisco.barbosa.tinyLedger.app.*;
-import francisco.barbosa.tinyLedger.app.model.Account;
+import francisco.barbosa.tinyledger.app.*;
+import francisco.barbosa.tinyledger.app.model.Account;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;

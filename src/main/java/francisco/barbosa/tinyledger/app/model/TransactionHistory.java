@@ -1,14 +1,15 @@
-package francisco.barbosa.tinyLedger.app.model;
+package francisco.barbosa.tinyledger.app.model;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionHistory {
 	private String accountId;
-	private LinkedHashSet<Transaction> transactionList;
+	private List<Transaction> transactionList;
 
 	public TransactionHistory(String accountId) {
 		this.accountId = accountId;
-		transactionList = new LinkedHashSet<>();
+		transactionList = new ArrayList<>();
 	}
 
 	public void addTransaction(Transaction transaction) {

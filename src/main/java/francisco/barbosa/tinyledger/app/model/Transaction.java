@@ -1,4 +1,4 @@
-package francisco.barbosa.tinyLedger.app.model;
+package francisco.barbosa.tinyledger.app.model;
 
 import java.math.BigDecimal;
 import java.time.Instant;

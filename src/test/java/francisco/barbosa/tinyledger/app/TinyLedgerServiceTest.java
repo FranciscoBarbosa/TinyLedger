@@ -1,12 +1,12 @@
-package francisco.barbosa.tinyLedger.app;
+package francisco.barbosa.tinyledger.app;
 
-import static francisco.barbosa.tinyLedger.adapter.out.inmemory.AccountBalanceInMemoryRepository.UUID_ACCOUNT_FRANCISCO;
+import static francisco.barbosa.tinyledger.adapter.out.inmemory.AccountBalanceInMemoryRepository.UUID_ACCOUNT_FRANCISCO;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import francisco.barbosa.tinyLedger.app.exception.AccountNotFoundException;
-import francisco.barbosa.tinyLedger.app.exception.OperationNotAllowedException;
-import francisco.barbosa.tinyLedger.app.model.Operation;
+import francisco.barbosa.tinyledger.app.exception.AccountNotFoundException;
+import francisco.barbosa.tinyledger.app.exception.OperationNotAllowedException;
+import francisco.barbosa.tinyledger.app.model.Operation;
 import java.math.BigDecimal;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
