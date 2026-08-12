@@ -14,7 +14,7 @@ import org.springframework.web.client.RestClient;
 import java.math.BigDecimal;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TinyLedgerControllerIT {
+public class TinyLedgerControllerTests {
 	private static final String FRANCISCO_LEDGER_URL = "/v1/ledgers/fd1bb2a6-b1bb-4608-bdfb-cdda9a8a657f";
 
 	@Autowired
