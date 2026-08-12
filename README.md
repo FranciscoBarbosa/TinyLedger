@@ -14,7 +14,6 @@ The application uses in-memory storage, as suggested by the exercise.
 ## Requirements
 
 - Java 21
-- Maven 3.9+
 
 ## Running the application
 
