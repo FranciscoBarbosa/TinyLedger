@@ -1,8 +1,6 @@
 package francisco.barbosa.tinyledger.adapter.in.rest;
 
-import francisco.barbosa.tinyledger.adapter.in.rest.dto.ResponseBalance;
-import francisco.barbosa.tinyledger.adapter.in.rest.dto.ResponseTransaction;
-import francisco.barbosa.tinyledger.adapter.in.rest.dto.ResponseTransactionHistory;
+import francisco.barbosa.tinyledger.adapter.in.rest.dto.*;
 import francisco.barbosa.tinyledger.adapter.out.inmemory.AccountBalanceInMemoryRepository;
 import francisco.barbosa.tinyledger.app.model.Operation;
 import org.assertj.core.api.Assertions;
@@ -35,7 +33,8 @@ public class TinyLedgerControllerIT {
 	@Test
 	void shouldDepositInAccount() {
 		String depositUri = FRANCISCO_LEDGER_URL + "/deposits";
-		var response = restClient.post().uri(depositUri).body("10").retrieve().toEntity(ResponseTransaction.class);
+		var request = new DepositRequest("10");
+		var response = restClient.post().uri(depositUri).body(request).retrieve().toEntity(ResponseTransaction.class);
 
 		Assertions.assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
 	}
@@ -43,7 +42,8 @@ public class TinyLedgerControllerIT {
 	@Test
 	void shouldWithdrawFromAccount() {
 		String withdrawUri = FRANCISCO_LEDGER_URL + "/withdraws";
-		var response = restClient.post().uri(withdrawUri).body("20").retrieve().toEntity(ResponseTransaction.class);
+		var request = new WithdrawRequest("10");
+		var response = restClient.post().uri(withdrawUri).body(request).retrieve().toEntity(ResponseTransaction.class);
 
 		Assertions.assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
 	}
@@ -109,12 +109,14 @@ public class TinyLedgerControllerIT {
 	}
 
 	private void depositInAccount(String amount) {
+		var request = new DepositRequest(amount);
 		String depositUri = FRANCISCO_LEDGER_URL + "/deposits";
-		restClient.post().uri(depositUri).body(amount).retrieve().toBodilessEntity();
+		restClient.post().uri(depositUri).body(request).retrieve().toBodilessEntity();
 	}
 
 	private void withdrawFromAccount(String amount) {
+		var request = new WithdrawRequest(amount);
 		String depositUri = FRANCISCO_LEDGER_URL + "/withdraws";
-		restClient.post().uri(depositUri).body(amount).retrieve().toBodilessEntity();
+		restClient.post().uri(depositUri).body(request).retrieve().toBodilessEntity();
 	}
 }

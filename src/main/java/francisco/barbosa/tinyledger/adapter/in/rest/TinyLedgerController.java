@@ -1,8 +1,6 @@
 package francisco.barbosa.tinyledger.adapter.in.rest;
 
-import francisco.barbosa.tinyledger.adapter.in.rest.dto.ResponseBalance;
-import francisco.barbosa.tinyledger.adapter.in.rest.dto.ResponseTransaction;
-import francisco.barbosa.tinyledger.adapter.in.rest.dto.ResponseTransactionHistory;
+import francisco.barbosa.tinyledger.adapter.in.rest.dto.*;
 import francisco.barbosa.tinyledger.app.TinyLedgerService;
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,15 +26,17 @@ public class TinyLedgerController {
 	}
 
 	@PostMapping("/{accountId}/deposits")
-	ResponseEntity<ResponseTransaction> deposit(@PathVariable String accountId, @RequestBody String amount) {
-		Transaction transaction = tinyLedgerService.deposit(accountId, new BigDecimal(amount));
+	ResponseEntity<ResponseTransaction> deposit(@PathVariable String accountId,
+			@RequestBody DepositRequest depositRequest) {
+		Transaction transaction = tinyLedgerService.deposit(accountId, new BigDecimal(depositRequest.amount()));
 		ResponseTransaction responseTransaction = mapTransactionToResponseTransaction(transaction);
 		return ResponseEntity.ok(responseTransaction);
 	}
 
 	@PostMapping("/{accountId}/withdraws")
-	ResponseEntity<ResponseTransaction> withdraw(@PathVariable String accountId, @RequestBody String amount) {
-		Transaction transaction = tinyLedgerService.withdraw(accountId, new BigDecimal(amount));
+	ResponseEntity<ResponseTransaction> withdraw(@PathVariable String accountId,
+			@RequestBody WithdrawRequest withdrawRequest) {
+		Transaction transaction = tinyLedgerService.withdraw(accountId, new BigDecimal(withdrawRequest.amount()));
 		ResponseTransaction responseTransaction = mapTransactionToResponseTransaction(transaction);
 		return ResponseEntity.ok(responseTransaction);
 	}
