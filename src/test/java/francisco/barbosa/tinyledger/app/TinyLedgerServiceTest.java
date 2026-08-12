@@ -16,6 +16,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -94,6 +97,38 @@ class TinyLedgerServiceTest {
 				.assertThatThrownBy(
 						() -> tinyLedgerService.deposit(UUID.randomUUID().toString(), new BigDecimal("1.0")))
 				.isInstanceOf(AccountNotFoundException.class);
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = {"-10", "0"})
+	void shouldNotDepositWhenAmountIsInvalid(String amount) {
+		BigDecimal value = amount == null ? null : new BigDecimal(amount);
+
+		String testAccountUUID = UUID.randomUUID().toString();
+		Account testAccount = new Account(testAccountUUID, BigDecimal.TEN);
+		when(accountRepository.getAccount(eq(testAccountUUID))).thenReturn(Optional.of(testAccount));
+
+		Assertions
+				.assertThatThrownBy(
+						() -> tinyLedgerService.deposit(testAccountUUID, value))
+				.isInstanceOf(OperationNotAllowedException.class);
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(strings = {"-10", "0"})
+	void shouldNotWithdrawWhenAmountIsInvalid(String amount) {
+		BigDecimal value = amount == null ? null : new BigDecimal(amount);
+
+		String testAccountUUID = UUID.randomUUID().toString();
+		Account testAccount = new Account(testAccountUUID, BigDecimal.TEN);
+		when(accountRepository.getAccount(eq(testAccountUUID))).thenReturn(Optional.of(testAccount));
+
+		Assertions
+				.assertThatThrownBy(
+						() -> tinyLedgerService.withdraw(testAccountUUID, value))
+				.isInstanceOf(OperationNotAllowedException.class);
 	}
 
 	@Test

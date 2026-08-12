@@ -13,13 +13,11 @@ public class TinyLedgerExceptionHandler {
 
 	@ExceptionHandler(AccountNotFoundException.class)
 	ResponseEntity<ApiError> handleAccountNotFound(AccountNotFoundException e) {
-
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiError(e.getMessage()));
 	}
 
 	@ExceptionHandler(OperationNotAllowedException.class)
 	ResponseEntity<ApiError> handleInvalidAmount(OperationNotAllowedException e) {
-
 		return ResponseEntity.badRequest().body(new ApiError(e.getMessage()));
 	}
 }

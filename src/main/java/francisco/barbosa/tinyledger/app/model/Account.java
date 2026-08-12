@@ -27,6 +27,10 @@ public class Account {
 	}
 
 	public Transaction withdraw(BigDecimal amount) {
+		if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new OperationNotAllowedException(
+					"Withdraw operation is not allowed, amount needs to be greater than 0");
+		}
 		if (balance.compareTo(amount) < 0) {
 			throw new OperationNotAllowedException(
 					"Withdraw operation is not allowed, as the account does not have enough balance.");
@@ -37,6 +41,10 @@ public class Account {
 	}
 
 	public Transaction deposit(BigDecimal amount) {
+		if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new OperationNotAllowedException(
+					"Deposit operation is not allowed, amount needs to be greater than 0");
+		}
 		this.balance = balance.add(amount);
 		return createNewTransaction(Operation.DEPOSIT, amount);
 	}
