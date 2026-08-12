@@ -5,6 +5,8 @@ import francisco.barbosa.tinyledger.app.model.Account;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,40 +18,20 @@ public class AccountBalanceInMemoryRepository implements AccountRepository {
 
 	public AccountBalanceInMemoryRepository() {
 		this.accountStore = new HashMap<>();
-		loadAccountsData();
+		loadAndResetAccountsData();
 	}
 
 	@Override
-	public boolean accountExists(String accountId) {
-		return accountStore.containsKey(accountId);
+	public Optional<Account> getAccount(String accountId) {
+		return Optional.ofNullable(accountStore.get(accountId));
 	}
 
 	@Override
-	public void add(String accountId, BigDecimal ammount) {
-		accountStore.computeIfPresent(accountId, (id, account) -> {
-			BigDecimal previousBalance = account.getBalance();
-			account.setBalance(previousBalance.add(ammount));
-
-			return account;
-		});
+	public void updateAccount(String accountId, Account account) {
+		accountStore.put(accountId, account);
 	}
 
-	@Override
-	public void remove(String accountId, BigDecimal ammount) {
-		accountStore.computeIfPresent(accountId, (id, account) -> {
-			BigDecimal previousBalance = account.getBalance();
-			account.setBalance(previousBalance.subtract(ammount));
-
-			return account;
-		});
-	}
-
-	@Override
-	public BigDecimal getAccountBalance(String accountId) {
-		return accountStore.get(accountId).getBalance();
-	}
-
-	private void loadAccountsData() {
+	public void loadAndResetAccountsData() {
 		Account accountFrancisco = new Account(UUID_ACCOUNT_FRANCISCO, new BigDecimal("100"));
 		Account accountMaria = new Account(UUID_ACCOUNT_MARIA, new BigDecimal("200"));
 

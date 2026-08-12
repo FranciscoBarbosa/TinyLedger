@@ -1,13 +1,10 @@
 package francisco.barbosa.tinyledger.app;
 
-import java.math.BigDecimal;
+import francisco.barbosa.tinyledger.app.model.Account;
+
+import java.util.Optional;
 
 public interface AccountRepository {
-	boolean accountExists(String accountId);
-
-	void add(String accountId, BigDecimal ammount);
-
-	void remove(String accountId, BigDecimal ammount);
-
-	BigDecimal getAccountBalance(String accountId);
+	Optional<Account> getAccount(String accountId);
+	void updateAccount(String accountId, Account account);
 }

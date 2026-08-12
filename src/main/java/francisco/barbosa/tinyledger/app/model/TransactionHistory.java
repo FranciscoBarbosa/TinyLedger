@@ -1,14 +1,15 @@
 package francisco.barbosa.tinyledger.app.model;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionHistory {
-	private String accountId;
+	@Getter
 	private List<Transaction> transactionList;
 
-	public TransactionHistory(String accountId) {
-		this.accountId = accountId;
+	public TransactionHistory() {
 		transactionList = new ArrayList<>();
 	}
 

@@ -2,48 +2,50 @@ package francisco.barbosa.tinyledger.app;
 
 import francisco.barbosa.tinyledger.app.exception.AccountNotFoundException;
 import francisco.barbosa.tinyledger.app.exception.OperationNotAllowedException;
+import francisco.barbosa.tinyledger.app.model.Account;
 import francisco.barbosa.tinyledger.app.model.Operation;
+import francisco.barbosa.tinyledger.app.model.Transaction;
 import francisco.barbosa.tinyledger.app.model.TransactionHistory;
 import java.math.BigDecimal;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.util.Tuple;
 
 @Service
 @RequiredArgsConstructor
 public class TinyLedgerService {
 	private final AccountRepository accountRepository;
-	private final TransactionHistoryRepository transactionHistoryRepository;
 
-	public void deposit(String accountId, BigDecimal ammount) {
-		validateAccountId(accountId);
-		accountRepository.add(accountId, ammount);
-		transactionHistoryRepository.updateTransactionHistory(accountId, Operation.DEPOSIT, ammount);
+	public Transaction deposit(String accountId, BigDecimal amount) {
+		Account account = getAccount(accountId);
+		Transaction transaction = account.deposit(amount);
+		accountRepository.updateAccount(accountId, account);
+		return transaction;
 	}
 
-	public void withdraw(String accountId, BigDecimal ammount) {
-		validateAccountId(accountId);
-		BigDecimal accountBalance = accountRepository.getAccountBalance(accountId);
-		if (accountBalance.compareTo(ammount) < 0) {
-			throw new OperationNotAllowedException(
-					"Withdraw operation is not allowed, as the account does not have enough balance.");
-		}
-		accountRepository.remove(accountId, ammount);
-		transactionHistoryRepository.updateTransactionHistory(accountId, Operation.WITHDRAW, ammount);
+	public Transaction withdraw(String accountId, BigDecimal amount) {
+		Account account = getAccount(accountId);
+		Transaction transaction = account.withdraw(amount);
+		accountRepository.updateAccount(accountId, account);
+		return transaction;
 	}
 
-	public BigDecimal viewBalance(String accountId) {
-		validateAccountId(accountId);
-		return accountRepository.getAccountBalance(accountId);
+	public Tuple<String, String> viewBalance(String accountId) {
+		Account account = getAccount(accountId);
+		String balance = account.getBalance().toString();
+
+		return new Tuple<>(accountId, balance);
 	}
 
 	public TransactionHistory getTransactionHistory(String accountId) {
-		validateAccountId(accountId);
-		return transactionHistoryRepository.getTransactionHistory(accountId);
+		Account account = getAccount(accountId);
+		return account.getTransactionHistory();
 	}
 
-	private void validateAccountId(String accountId) {
-		if (!accountRepository.accountExists(accountId)) {
-			throw new AccountNotFoundException("Account");
-		}
+	private Account getAccount(String accountId) {
+		return accountRepository.getAccount(accountId)
+				.orElseThrow(() -> new AccountNotFoundException("Account doesn't exist"));
 	}
 }

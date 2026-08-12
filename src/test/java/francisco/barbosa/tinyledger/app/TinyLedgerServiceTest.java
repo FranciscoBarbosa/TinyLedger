@@ -1,13 +1,17 @@
 package francisco.barbosa.tinyledger.app;
 
-import static francisco.barbosa.tinyledger.adapter.out.inmemory.AccountBalanceInMemoryRepository.UUID_ACCOUNT_FRANCISCO;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import francisco.barbosa.tinyledger.app.exception.AccountNotFoundException;
 import francisco.barbosa.tinyledger.app.exception.OperationNotAllowedException;
+import francisco.barbosa.tinyledger.app.model.Account;
 import francisco.barbosa.tinyledger.app.model.Operation;
 import java.math.BigDecimal;
+import java.util.Optional;
+import java.util.UUID;
+
+import francisco.barbosa.tinyledger.app.model.Transaction;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,89 +23,92 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TinyLedgerServiceTest {
 	@Mock
 	private AccountRepository accountRepository;
-	@Mock
-	private TransactionHistoryRepository transactionHistoryRepository;
 
 	private TinyLedgerService tinyLedgerService;
 
 	@BeforeEach
 	void setup() {
-		tinyLedgerService = new TinyLedgerService(accountRepository, transactionHistoryRepository);
+		tinyLedgerService = new TinyLedgerService(accountRepository);
 	}
 
 	@Test
-	void shouldWithdrawAmountWhenEnoughBalance() {
-		var withdrawnAmount = new BigDecimal("200.50");
-		when(accountRepository.accountExists(eq(UUID_ACCOUNT_FRANCISCO))).thenReturn(true);
-		when(accountRepository.getAccountBalance(eq(UUID_ACCOUNT_FRANCISCO))).thenReturn(new BigDecimal("300"));
+	void shouldWithdrawAmountAndCreateNewTransaction_WhenEnoughBalance() {
+		String testAccountUUID = UUID.randomUUID().toString();
+		Account testAccount = new Account(testAccountUUID, BigDecimal.TEN);
+		var withdrawnAmount = new BigDecimal("1.50");
+		when(accountRepository.getAccount(eq(testAccountUUID))).thenReturn(Optional.of(testAccount));
 
-		tinyLedgerService.withdraw(UUID_ACCOUNT_FRANCISCO, withdrawnAmount);
+		tinyLedgerService.withdraw(testAccountUUID, withdrawnAmount);
 
-		verify(accountRepository).remove(UUID_ACCOUNT_FRANCISCO, withdrawnAmount);
-		verify(transactionHistoryRepository).updateTransactionHistory(UUID_ACCOUNT_FRANCISCO, Operation.WITHDRAW,
-				withdrawnAmount);
+		BigDecimal expectedFinalBalance = new BigDecimal("8.50");
+		Transaction currentTransaction = testAccount.getTransactionHistory().getTransactionList().getFirst();
+		verify(accountRepository).updateAccount(testAccountUUID, testAccount);
+		Assertions.assertThat(testAccount.getBalance()).isEqualTo(expectedFinalBalance);
+		Assertions.assertThat(currentTransaction.operation()).isEqualTo(Operation.WITHDRAW);
+		Assertions.assertThat(currentTransaction.amount()).isEqualTo(new BigDecimal("1.50"));
 	}
 
 	@Test
-	void shouldNotWidhdrawAmountWhenNotEnoughBalance() {
-		var withdrawnAmount = new BigDecimal("200.50");
-		when(accountRepository.accountExists(eq(UUID_ACCOUNT_FRANCISCO))).thenReturn(true);
-		when(accountRepository.getAccountBalance(eq(UUID_ACCOUNT_FRANCISCO))).thenReturn(new BigDecimal("100"));
+	void shouldNotWidhdrawAmount_WhenNotEnoughBalance() {
+		String testAccountUUID = UUID.randomUUID().toString();
+		Account testAccount = new Account(testAccountUUID, BigDecimal.TEN);
+		var withdrawnAmount = new BigDecimal("14.50");
+		when(accountRepository.getAccount(eq(testAccountUUID))).thenReturn(Optional.of(testAccount));
 
-		Assertions.assertThatThrownBy(() -> tinyLedgerService.withdraw(UUID_ACCOUNT_FRANCISCO, withdrawnAmount))
+		Assertions.assertThatThrownBy(() -> tinyLedgerService.withdraw(testAccountUUID, withdrawnAmount))
 				.isInstanceOf(OperationNotAllowedException.class);
-
-		verifyNoInteractions(transactionHistoryRepository);
 	}
 
 	@Test
-	void shouldNotWithdrawAmountWhenAccountDoesntExist() {
-		var withdrawnAmount = new BigDecimal("200.50");
-		when(accountRepository.accountExists(eq(UUID_ACCOUNT_FRANCISCO))).thenReturn(false);
+	void shouldNotWithdrawAmount_WhenAccountDoesntExist() {
+		when(accountRepository.getAccount(any())).thenReturn(Optional.empty());
 
-		Assertions.assertThatThrownBy(() -> tinyLedgerService.withdraw(UUID_ACCOUNT_FRANCISCO, withdrawnAmount))
+		Assertions
+				.assertThatThrownBy(
+						() -> tinyLedgerService.withdraw(UUID.randomUUID().toString(), new BigDecimal("200.50")))
 				.isInstanceOf(AccountNotFoundException.class);
-
-		verifyNoInteractions(transactionHistoryRepository);
 	}
 
 	@Test
-	void shouldDepositAmountWhenAccountExist() {
-		var withdrawnAmount = new BigDecimal("200.50");
-		when(accountRepository.accountExists(eq(UUID_ACCOUNT_FRANCISCO))).thenReturn(true);
+	void shouldDepositAmountAndCreateNewTransaction_WhenAccountExist() {
+		var expectedFinalBalance = new BigDecimal("24.50");
+		String testAccountUUID = UUID.randomUUID().toString();
+		Account testAccount = new Account(testAccountUUID, BigDecimal.TEN);
+		var depositAmount = new BigDecimal("14.50");
+		when(accountRepository.getAccount(eq(testAccountUUID))).thenReturn(Optional.of(testAccount));
 
-		tinyLedgerService.deposit(UUID_ACCOUNT_FRANCISCO, withdrawnAmount);
+		tinyLedgerService.deposit(testAccountUUID, depositAmount);
 
-		verify(transactionHistoryRepository).updateTransactionHistory(UUID_ACCOUNT_FRANCISCO, Operation.DEPOSIT,
-				withdrawnAmount);
+		Transaction currentTransaction = testAccount.getTransactionHistory().getTransactionList().getFirst();
+		verify(accountRepository).updateAccount(testAccountUUID, testAccount);
+		Assertions.assertThat(testAccount.getBalance()).isEqualTo(expectedFinalBalance);
+		Assertions.assertThat(currentTransaction.operation()).isEqualTo(Operation.DEPOSIT);
+		Assertions.assertThat(currentTransaction.amount()).isEqualTo(new BigDecimal("14.50"));
 	}
 
 	@Test
 	void shouldNotDepositAmountWhenAccountDoesntExist() {
-		var withdrawnAmount = new BigDecimal("200.50");
-		when(accountRepository.accountExists(eq(UUID_ACCOUNT_FRANCISCO))).thenReturn(false);
+		when(accountRepository.getAccount(any())).thenReturn(Optional.empty());
 
-		Assertions.assertThatThrownBy(() -> tinyLedgerService.deposit(UUID_ACCOUNT_FRANCISCO, withdrawnAmount))
+		Assertions
+				.assertThatThrownBy(
+						() -> tinyLedgerService.deposit(UUID.randomUUID().toString(), new BigDecimal("1.0")))
 				.isInstanceOf(AccountNotFoundException.class);
-
-		verifyNoInteractions(transactionHistoryRepository);
 	}
 
 	@Test
 	void shouldNotViewTransactionHistoryAmountWhenAccountDoesntExist() {
-		when(accountRepository.accountExists(eq(UUID_ACCOUNT_FRANCISCO))).thenReturn(false);
+		when(accountRepository.getAccount(any())).thenReturn(Optional.empty());
 
-		Assertions.assertThatThrownBy(() -> tinyLedgerService.getTransactionHistory(UUID_ACCOUNT_FRANCISCO))
+		Assertions.assertThatThrownBy(() -> tinyLedgerService.getTransactionHistory(UUID.randomUUID().toString()))
 				.isInstanceOf(AccountNotFoundException.class);
-
-		verifyNoInteractions(transactionHistoryRepository);
 	}
 
 	@Test
 	void shouldNotViewAmountWhenAccountDoesntExist() {
-		when(accountRepository.accountExists(eq(UUID_ACCOUNT_FRANCISCO))).thenReturn(false);
+		when(accountRepository.getAccount(any())).thenReturn(Optional.empty());
 
-		Assertions.assertThatThrownBy(() -> tinyLedgerService.viewBalance(UUID_ACCOUNT_FRANCISCO))
+		Assertions.assertThatThrownBy(() -> tinyLedgerService.viewBalance(UUID.randomUUID().toString()))
 				.isInstanceOf(AccountNotFoundException.class);
 	}
 }
