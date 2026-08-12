@@ -10,7 +10,6 @@ import francisco.barbosa.tinyledger.app.model.TransactionHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.util.Tuple;
 
 @RestController
 @RequestMapping("/v1/ledgers")
@@ -20,8 +19,8 @@ public class TinyLedgerController {
 
 	@GetMapping("/{accountId}")
 	ResponseEntity<ResponseBalance> viewBalance(@PathVariable String accountId) {
-		Tuple<String, String> accountBalanceTupple = tinyLedgerService.viewBalance(accountId);
-		var accountBalance = new ResponseBalance(accountBalanceTupple._1(), accountBalanceTupple._2());
+		BigDecimal balance = tinyLedgerService.viewBalance(accountId);
+		var accountBalance = new ResponseBalance(accountId, balance);
 		return ResponseEntity.ok(accountBalance);
 	}
 

@@ -1,4 +1,6 @@
 package francisco.barbosa.tinyledger.adapter.in.rest.dto;
 
-public record ResponseBalance(String accountId, String balance) {
+import java.math.BigDecimal;
+
+public record ResponseBalance(String accountId, BigDecimal balance) {
 }

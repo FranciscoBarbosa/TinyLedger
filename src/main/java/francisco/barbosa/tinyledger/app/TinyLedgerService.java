@@ -32,11 +32,8 @@ public class TinyLedgerService {
 		return transaction;
 	}
 
-	public Tuple<String, String> viewBalance(String accountId) {
-		Account account = getAccount(accountId);
-		String balance = account.getBalance().toString();
-
-		return new Tuple<>(accountId, balance);
+	public BigDecimal viewBalance(String accountId) {
+		return getAccount(accountId).getBalance();
 	}
 
 	public TransactionHistory getTransactionHistory(String accountId) {
